@@ -19,6 +19,7 @@ export interface PersonalInfo {
   phone: string;
   location: string;
   summary: string;
+  profileImageUrl?: string; // Profile picture URL
   linkedin?: string;
   github?: string;
   portfolio?: string;

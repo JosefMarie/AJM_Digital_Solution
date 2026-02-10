@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getResume, updateResume, createResume } from '@/lib/firebase/firestore';
-import { Resume } from '@/lib/types';
+import { Resume, Experience, Skill, Education } from '@/lib/types';
 import GlassCard from '@/components/ui/GlassCard';
 
 export default function AdminResumePage() {
@@ -12,6 +12,14 @@ export default function AdminResumePage() {
     const [saving, setSaving] = useState(false);
     const [creating, setCreating] = useState(false);
     const router = useRouter();
+
+    // Section editing states
+    const [editingExperience, setEditingExperience] = useState<Experience | null>(null);
+    const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
+    const [editingEducation, setEditingEducation] = useState<Education | null>(null);
+    const [showExpForm, setShowExpForm] = useState(false);
+    const [showSkillForm, setShowSkillForm] = useState(false);
+    const [showEduForm, setShowEduForm] = useState(false);
 
     useEffect(() => {
         fetchResume();
@@ -39,6 +47,7 @@ export default function AdminResumePage() {
                     phone: '+1234567890',
                     location: 'City, Country',
                     summary: 'Your professional summary here...',
+                    profileImageUrl: '',
                 },
                 experience: [
                     {
@@ -46,25 +55,12 @@ export default function AdminResumePage() {
                         company: 'Example Company',
                         position: 'Software Developer',
                         duration: 'Jan 2020 - Present',
-                        responsibilities: [
-                            'Developed web applications using React and Node.js',
-                            'Collaborated with cross-functional teams',
-                        ],
+                        responsibilities: ['Developed web applications', 'Collaborated with teams'],
                     },
                 ],
                 skills: [
-                    {
-                        category: 'Frontend',
-                        items: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS'],
-                    },
-                    {
-                        category: 'Backend',
-                        items: ['Node.js', 'Express', 'Firebase', 'PostgreSQL'],
-                    },
-                    {
-                        category: 'Tools',
-                        items: ['Git', 'VS Code', 'Figma', 'Postman'],
-                    },
+                    { category: 'Frontend', items: ['React', 'Next.js', 'TypeScript'] },
+                    { category: 'Backend', items: ['Node.js', 'Firebase'] },
                 ],
                 education: [
                     {
@@ -103,6 +99,134 @@ export default function AdminResumePage() {
         }
     };
 
+    // Experience handlers
+    const handleAddExperience = () => {
+        const newExp: Experience = {
+            id: Date.now().toString(),
+            company: '',
+            position: '',
+            duration: '',
+            responsibilities: [''],
+        };
+        setEditingExperience(newExp);
+        setShowExpForm(true);
+    };
+
+    const handleEditExperience = (exp: Experience) => {
+        setEditingExperience({ ...exp });
+        setShowExpForm(true);
+    };
+
+    const handleSaveExperience = () => {
+        if (!resume || !editingExperience) return;
+
+        const existingIndex = resume.experience.findIndex(e => e.id === editingExperience.id);
+        let updatedExperience = [...resume.experience];
+
+        if (existingIndex >= 0) {
+            updatedExperience[existingIndex] = editingExperience;
+        } else {
+            updatedExperience.push(editingExperience);
+        }
+
+        setResume({ ...resume, experience: updatedExperience });
+        setEditingExperience(null);
+        setShowExpForm(false);
+    };
+
+    const handleDeleteExperience = (id: string) => {
+        if (!resume || !confirm('Delete this experience?')) return;
+        setResume({
+            ...resume,
+            experience: resume.experience.filter(e => e.id !== id),
+        });
+    };
+
+    // Skill handlers
+    const handleAddSkill = () => {
+        const newSkill: Skill = { category: '', items: [''] };
+        setEditingSkill(newSkill);
+        setShowSkillForm(true);
+    };
+
+    const handleEditSkill = (skill: Skill, index: number) => {
+        setEditingSkill({ ...skill, category: skill.category + `_${index}` }); // Track index
+        setShowSkillForm(true);
+    };
+
+    const handleSaveSkill = () => {
+        if (!resume || !editingSkill) return;
+
+        const categoryParts = editingSkill.category.split('_');
+        const isEdit = categoryParts.length > 1;
+        const skillIndex = isEdit ? parseInt(categoryParts[1]) : -1;
+        const actualCategory = isEdit ? categoryParts[0] : editingSkill.category;
+
+        let updatedSkills = [...resume.skills];
+        const skillToSave = { ...editingSkill, category: actualCategory };
+
+        if (isEdit && skillIndex >= 0) {
+            updatedSkills[skillIndex] = skillToSave;
+        } else {
+            updatedSkills.push(skillToSave);
+        }
+
+        setResume({ ...resume, skills: updatedSkills });
+        setEditingSkill(null);
+        setShowSkillForm(false);
+    };
+
+    const handleDeleteSkill = (index: number) => {
+        if (!resume || !confirm('Delete this skill category?')) return;
+        setResume({
+            ...resume,
+            skills: resume.skills.filter((_, i) => i !== index),
+        });
+    };
+
+    // Education handlers
+    const handleAddEducation = () => {
+        const newEdu: Education = {
+            id: Date.now().toString(),
+            institution: '',
+            degree: '',
+            field: '',
+            year: '',
+        };
+        setEditingEducation(newEdu);
+        setShowEduForm(true);
+    };
+
+    const handleEditEducation = (edu: Education) => {
+        setEditingEducation({ ...edu });
+        setShowEduForm(true);
+    };
+
+    const handleSaveEducation = () => {
+        if (!resume || !editingEducation) return;
+
+        const existingIndex = resume.education.findIndex(e => e.id === editingEducation.id);
+        let updatedEducation = [...resume.education];
+
+        if (existingIndex >= 0) {
+            updatedEducation[existingIndex] = editingEducation;
+        } else {
+            updatedEducation.push(editingEducation);
+        }
+
+        setResume({ ...resume, education: updatedEducation });
+        setEditingEducation(null);
+        setShowEduForm(false);
+    };
+
+    const handleDeleteEducation = (id: string) => {
+        if (!resume || !confirm('Delete this education entry?')) return;
+        setResume({
+            ...resume,
+            education: resume.education.filter(e => e.id !== id),
+        });
+    };
+
     if (loading) {
         return (
             <div className="max-w-6xl mx-auto px-6 py-12">
@@ -116,7 +240,6 @@ export default function AdminResumePage() {
     if (!resume) {
         return (
             <div className="max-w-6xl mx-auto px-6 py-12">
-                {/* Back Button */}
                 <button
                     onClick={() => router.push('/admin')}
                     className="mb-6 flex items-center gap-2 text-white/60 hover:text-neon-cyan transition-colors"
@@ -140,9 +263,6 @@ export default function AdminResumePage() {
                     >
                         {creating ? 'Creating Resume...' : 'Create Initial Resume'}
                     </button>
-                    <p className="mt-6 text-sm text-white/40">
-                        This will create a resume template that you can edit
-                    </p>
                 </GlassCard>
             </div>
         );
@@ -150,7 +270,7 @@ export default function AdminResumePage() {
 
     return (
         <div className="max-w-6xl mx-auto px-6 py-12">
-            {/* Header with Back Button and Save */}
+            {/* Header */}
             <div className="flex justify-between items-center mb-8">
                 <div className="flex items-center gap-4">
                     <button
@@ -174,7 +294,7 @@ export default function AdminResumePage() {
             </div>
 
             <div className="space-y-8">
-                {/* Personal Info */}
+                {/* Personal Info - Existing code stays the same */}
                 <GlassCard className="p-6">
                     <h3 className="text-2xl font-bold text-white mb-6">Personal Information</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -252,6 +372,31 @@ export default function AdminResumePage() {
                                 className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-cyan focus:ring-2 focus:ring-neon-cyan/20"
                             />
                         </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-white/80 mb-2">Profile Picture URL</label>
+                            <input
+                                type="url"
+                                value={resume.personalInfo.profileImageUrl || ''}
+                                onChange={(e) =>
+                                    setResume({
+                                        ...resume,
+                                        personalInfo: { ...resume.personalInfo, profileImageUrl: e.target.value },
+                                    })
+                                }
+                                placeholder="https://firebasestorage.googleapis.com/..."
+                                className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-cyan focus:ring-2 focus:ring-neon-cyan/20"
+                            />
+                            {resume.personalInfo.profileImageUrl && (
+                                <div className="mt-3">
+                                    <img
+                                        src={resume.personalInfo.profileImageUrl}
+                                        alt="Profile preview"
+                                        className="w-20 h-20 rounded-full object-cover border-2 border-neon-cyan/50"
+                                    />
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <div className="mt-4">
@@ -270,53 +415,278 @@ export default function AdminResumePage() {
                     </div>
                 </GlassCard>
 
-                {/* Note about complex editing */}
-                <GlassCard className="p-6 bg-neon-cyan/5 border-neon-cyan/20">
-                    <div className="flex gap-3">
-                        <span className="text-2xl">ℹ️</span>
-                        <div>
-                            <h4 className="text-lg font-bold text-white mb-2">Advanced Editing</h4>
-                            <p className="text-white/70 text-sm">
-                                For editing Experience, Skills, and Education sections, you can either:
-                                <br />• Update data directly in Firestore Console for complex changes
-                                <br />• Or extend this interface to include full CRUD for each section
-                            </p>
-                        </div>
-                    </div>
-                </GlassCard>
-
-                {/* Preview Sections */}
+                {/* Experience Section */}
                 <GlassCard className="p-6">
-                    <h3 className="text-2xl font-bold text-white mb-6">Experience ({resume.experience.length})</h3>
+                    <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-2xl font-bold text-white">Experience ({resume.experience.length})</h3>
+                        <button
+                            onClick={handleAddExperience}
+                            className="px-4 py-2 bg-gradient-to-r from-electric-purple to-neon-cyan rounded-lg text-white font-medium hover:shadow-lg transition-all"
+                        >
+                            + Add Experience
+                        </button>
+                    </div>
+
+                    {showExpForm && editingExperience && (
+                        <div className="mb-6 p-4 bg-void-800/30 rounded-lg border border-neon-cyan/30">
+                            <h4 className="text-lg font-bold text-white mb-4">
+                                {resume.experience.some(e => e.id === editingExperience.id) ? 'Edit' : 'Add'} Experience
+                            </h4>
+                            <div className="space-y-4">
+                                <input
+                                    type="text"
+                                    placeholder="Position"
+                                    value={editingExperience.position}
+                                    onChange={(e) => setEditingExperience({ ...editingExperience, position: e.target.value })}
+                                    className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Company"
+                                    value={editingExperience.company}
+                                    onChange={(e) => setEditingExperience({ ...editingExperience, company: e.target.value })}
+                                    className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Duration (e.g., Jan 2020 - Present)"
+                                    value={editingExperience.duration}
+                                    onChange={(e) => setEditingExperience({ ...editingExperience, duration: e.target.value })}
+                                    className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white"
+                                />
+                                <div>
+                                    <label className="block text-sm text-white/70 mb-2">Responsibilities (one per line)</label>
+                                    <textarea
+                                        placeholder="• Developed features&#10;• Led projects"
+                                        value={editingExperience.responsibilities.join('\n')}
+                                        onChange={(e) => setEditingExperience({
+                                            ...editingExperience,
+                                            responsibilities: e.target.value.split('\n').filter(r => r.trim())
+                                        })}
+                                        rows={4}
+                                        className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white"
+                                    />
+                                </div>
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={handleSaveExperience}
+                                        className="px-6 py-2 bg-gradient-to-r from-electric-purple to-neon-cyan rounded-lg text-white font-medium"
+                                    >
+                                        Save
+                                    </button>
+                                    <button
+                                        onClick={() => { setShowExpForm(false); setEditingExperience(null); }}
+                                        className="px-6 py-2 bg-white/10 border border-white/20 rounded-lg text-white"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="space-y-4">
                         {resume.experience.map((exp) => (
                             <div key={exp.id} className="p-4 bg-void-800/30 rounded-lg border border-white/5">
-                                <p className="text-white font-bold">{exp.position}</p>
-                                <p className="text-neon-cyan text-sm">{exp.company} • {exp.duration}</p>
+                                <div className="flex justify-between items-start">
+                                    <div className="flex-1">
+                                        <p className="text-white font-bold">{exp.position}</p>
+                                        <p className="text-neon-cyan text-sm">{exp.company} • {exp.duration}</p>
+                                        <ul className="mt-2 text-white/60 text-sm space-y-1">
+                                            {exp.responsibilities.map((resp, i) => (
+                                                <li key={i}>• {resp}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    <div className="flex gap-2 ml-4">
+                                        <button
+                                            onClick={() => handleEditExperience(exp)}
+                                            className="px-3 py-1 text-sm bg-white/10 hover:bg-white/20 rounded text-white"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteExperience(exp.id)}
+                                            className="px-3 py-1 text-sm bg-red-500/20 hover:bg-red-500/30 rounded text-red-200"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         ))}
                     </div>
                 </GlassCard>
 
+                {/* Skills Section */}
                 <GlassCard className="p-6">
-                    <h3 className="text-2xl font-bold text-white mb-6">Skills ({resume.skills.length} categories)</h3>
+                    <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-2xl font-bold text-white">Skills ({resume.skills.length})</h3>
+                        <button
+                            onClick={handleAddSkill}
+                            className="px-4 py-2 bg-gradient-to-r from-electric-purple to-neon-cyan rounded-lg text-white font-medium hover:shadow-lg transition-all"
+                        >
+                            + Add Skill Category
+                        </button>
+                    </div>
+
+                    {showSkillForm && editingSkill && (
+                        <div className="mb-6 p-4 bg-void-800/30 rounded-lg border border-neon-cyan/30">
+                            <h4 className="text-lg font-bold text-white mb-4">Add/Edit Skill Category</h4>
+                            <div className="space-y-4">
+                                <input
+                                    type="text"
+                                    placeholder="Category (e.g., Frontend)"
+                                    value={editingSkill.category.split('_')[0]}
+                                    onChange={(e) => setEditingSkill({ ...editingSkill, category: e.target.value })}
+                                    className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white"
+                                />
+                                <div>
+                                    <label className="block text-sm text-white/70 mb-2">Skills (comma-separated)</label>
+                                    <input
+                                        type="text"
+                                        placeholder="React, Next.js, TypeScript"
+                                        value={editingSkill.items.join(', ')}
+                                        onChange={(e) => setEditingSkill({
+                                            ...editingSkill,
+                                            items: e.target.value.split(',').map(s => s.trim()).filter(s => s)
+                                        })}
+                                        className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white"
+                                    />
+                                </div>
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={handleSaveSkill}
+                                        className="px-6 py-2 bg-gradient-to-r from-electric-purple to-neon-cyan rounded-lg text-white font-medium"
+                                    >
+                                        Save
+                                    </button>
+                                    <button
+                                        onClick={() => { setShowSkillForm(false); setEditingSkill(null); }}
+                                        className="px-6 py-2 bg-white/10 border border-white/20 rounded-lg text-white"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {resume.skills.map((skillGroup, idx) => (
                             <div key={idx} className="p-4 bg-void-800/30 rounded-lg border border-white/5">
-                                <p className="text-neon-cyan font-bold mb-2">{skillGroup.category}</p>
+                                <div className="flex justify-between items-start mb-2">
+                                    <p className="text-neon-cyan font-bold">{skillGroup.category}</p>
+                                    <div className="flex gap-1">
+                                        <button
+                                            onClick={() => handleEditSkill(skillGroup, idx)}
+                                            className="px-2 py-1 text-xs bg-white/10 hover:bg-white/20 rounded text-white"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteSkill(idx)}
+                                            className="px-2 py-1 text-xs bg-red-500/20 hover:bg-red-500/30 rounded text-red-200"
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                </div>
                                 <p className="text-white/60 text-sm">{skillGroup.items.join(', ')}</p>
                             </div>
                         ))}
                     </div>
                 </GlassCard>
 
+                {/* Education Section */}
                 <GlassCard className="p-6">
-                    <h3 className="text-2xl font-bold text-white mb-6">Education ({resume.education.length})</h3>
+                    <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-2xl font-bold text-white">Education ({resume.education.length})</h3>
+                        <button
+                            onClick={handleAddEducation}
+                            className="px-4 py-2 bg-gradient-to-r from-electric-purple to-neon-cyan rounded-lg text-white font-medium hover:shadow-lg transition-all"
+                        >
+                            + Add Education
+                        </button>
+                    </div>
+
+                    {showEduForm && editingEducation && (
+                        <div className="mb-6 p-4 bg-void-800/30 rounded-lg border border-neon-cyan/30">
+                            <h4 className="text-lg font-bold text-white mb-4">
+                                {resume.education.some(e => e.id === editingEducation.id) ? 'Edit' : 'Add'} Education
+                            </h4>
+                            <div className="space-y-4">
+                                <input
+                                    type="text"
+                                    placeholder="Degree (e.g., Bachelor of Science)"
+                                    value={editingEducation.degree}
+                                    onChange={(e) => setEditingEducation({ ...editingEducation, degree: e.target.value })}
+                                    className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Institution"
+                                    value={editingEducation.institution}
+                                    onChange={(e) => setEditingEducation({ ...editingEducation, institution: e.target.value })}
+                                    className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Field of Study (optional)"
+                                    value={editingEducation.field || ''}
+                                    onChange={(e) => setEditingEducation({ ...editingEducation, field: e.target.value })}
+                                    className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Year (e.g., 2016 - 2020)"
+                                    value={editingEducation.year}
+                                    onChange={(e) => setEditingEducation({ ...editingEducation, year: e.target.value })}
+                                    className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white"
+                                />
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={handleSaveEducation}
+                                        className="px-6 py-2 bg-gradient-to-r from-electric-purple to-neon-cyan rounded-lg text-white font-medium"
+                                    >
+                                        Save
+                                    </button>
+                                    <button
+                                        onClick={() => { setShowEduForm(false); setEditingEducation(null); }}
+                                        className="px-6 py-2 bg-white/10 border border-white/20 rounded-lg text-white"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="space-y-4">
                         {resume.education.map((edu) => (
                             <div key={edu.id} className="p-4 bg-void-800/30 rounded-lg border border-white/5">
-                                <p className="text-white font-bold">{edu.degree}</p>
-                                <p className="text-neon-cyan text-sm">{edu.institution} • {edu.year}</p>
+                                <div className="flex justify-between items-start">
+                                    <div className="flex-1">
+                                        <p className="text-white font-bold">{edu.degree}</p>
+                                        <p className="text-neon-cyan text-sm">{edu.institution}</p>
+                                        {edu.field && <p className="text-white/60 text-sm">{edu.field}</p>}
+                                        <p className="text-white/60 text-sm">{edu.year}</p>
+                                    </div>
+                                    <div className="flex gap-2 ml-4">
+                                        <button
+                                            onClick={() => handleEditEducation(edu)}
+                                            className="px-3 py-1 text-sm bg-white/10 hover:bg-white/20 rounded text-white"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteEducation(edu.id)}
+                                            className="px-3 py-1 text-sm bg-red-500/20 hover:bg-red-500/30 rounded text-red-200"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         ))}
                     </div>

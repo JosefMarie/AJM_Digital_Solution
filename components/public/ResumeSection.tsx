@@ -67,14 +67,45 @@ export default function ResumeSection() {
 
                 <div className="space-y-8">
                     {/* Personal Info */}
-                    <GlassCard className="p-8">
-                        <h3 className="text-3xl font-bold text-white mb-2">{resume.personalInfo.name}</h3>
-                        <p className="text-xl text-neon-cyan mb-4">{resume.personalInfo.title}</p>
-                        <p className="text-white/70 leading-relaxed mb-4">{resume.personalInfo.summary}</p>
-                        <div className="flex flex-wrap gap-4 text-white/60">
-                            <span>📧 {resume.personalInfo.email}</span>
-                            <span>📱 {resume.personalInfo.phone}</span>
-                            <span>📍 {resume.personalInfo.location}</span>
+                    <GlassCard className="p-8 mb-8">
+                        <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+                            {/* Profile Picture */}
+                            {resume.personalInfo.profileImageUrl && (
+                                <div className="flex-shrink-0">
+                                    <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-neon-cyan/50 shadow-lg shadow-neon-cyan/30">
+                                        <img
+                                            src={resume.personalInfo.profileImageUrl}
+                                            alt={resume.personalInfo.name}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Personal Details */}
+                            <div className="flex-1">
+                                <h3 className="text-3xl font-bold text-white mb-2">{resume.personalInfo.name}</h3>
+                                <p className="text-xl text-neon-cyan mb-4">{resume.personalInfo.title}</p>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-white/70">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-neon-sky">📧</span>
+                                        <a href={`mailto:${resume.personalInfo.email}`} className="hover:text-neon-cyan transition-colors">
+                                            {resume.personalInfo.email}
+                                        </a>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-neon-sky">📱</span>
+                                        <span>{resume.personalInfo.phone}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-neon-sky">📍</span>
+                                        <span>{resume.personalInfo.location}</span>
+                                    </div>
+                                </div>
+
+                                <p className="mt-4 text-white/80 leading-relaxed">{resume.personalInfo.summary}</p>
+                            </div>
                         </div>
                     </GlassCard>
 
