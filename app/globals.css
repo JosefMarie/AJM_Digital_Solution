@@ -9,6 +9,10 @@
   }
 }
 
+
+
+
+
 /* Animation delays for fluid blobs */
 .animation-delay-2000 {
   animation-delay: 2s;
@@ -39,4 +43,62 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, #9333ea, #38bdf8);
+}
+
+/* Premium Data Flow Animations */
+@keyframes data-flow {
+  0% {
+    stroke-dashoffset: 20;
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 0.8;
+  }
+
+  80% {
+    opacity: 0.8;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes node-pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+
+  50% {
+    transform: scale(1.5);
+    opacity: 0.8;
+    filter: blur(2px);
+  }
+}
+
+.animate-data-flow {
+  animation: data-flow 3s linear infinite;
+}
+
+.animate-node-pulse {
+  animation: node-pulse 4s ease-in-out infinite;
+}
+
+/* Scroll Reveal Animations V2 (Cinematic) */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px) scale(0.95) rotateX(10deg);
+  perspective: 1000px;
+  transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0) scale(1) rotateX(0deg);
 }

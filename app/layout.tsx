@@ -13,10 +13,12 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
-            <body className="antialiased" style={{ fontFamily: '"Tw Cen MT", sans-serif' }}>
+        <html lang="en" className="dark">
+            <body className="antialiased bg-void-900 text-white min-h-screen">
                 <FluidBackground />
-                {children}
+                <main className="relative z-10 w-full">
+                    {children}
+                </main>
             </body>
         </html>
     );

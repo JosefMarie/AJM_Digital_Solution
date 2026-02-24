@@ -1,12 +1,14 @@
-'use client';
-
 import React from 'react';
+import DataFlowBackground from './DataFlowBackground';
 
 export default function FluidBackground() {
     return (
         <div className="fixed inset-0 -z-10 overflow-hidden bg-void-900">
             {/* Base gradient background */}
             <div className="absolute inset-0 bg-fluid-gradient opacity-50"></div>
+
+            {/* Premium Data Flow Layer */}
+            <DataFlowBackground />
 
             {/* Animated fluid blobs */}
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-electric-purple rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>

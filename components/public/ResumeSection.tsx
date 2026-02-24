@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { getResume } from '@/lib/firebase/firestore';
 import { Resume } from '@/lib/types';
 import GlassCard from '../ui/GlassCard';
+import ScrollReveal from '../ui/ScrollReveal';
 
 export default function ResumeSection() {
     const [resume, setResume] = useState<Resume | null>(null);
@@ -15,7 +16,7 @@ export default function ResumeSection() {
                 const data = await getResume();
                 setResume(data);
             } catch (error) {
-                console.error('Error loading resume:', error);
+                console.error('Error fetching resume:', error);
             } finally {
                 setLoading(false);
             }
@@ -39,37 +40,16 @@ export default function ResumeSection() {
         );
     }
 
-    if (!resume) {
-        return (
-            <section id="resume" className="min-h-screen px-6 py-20">
-                <div className="max-w-6xl mx-auto">
-                    <h2 className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-electric-purple to-neon-sky bg-clip-text text-transparent">
-                        Professional Experience
-                    </h2>
-                    <div className="text-center text-white/60 py-20">
-                        <p className="text-xl">Resume content coming soon!</p>
-                    </div>
-                </div>
-            </section>
-        );
-    }
+    if (!resume) return null;
 
     return (
         <section id="resume" className="min-h-screen px-6 py-20">
             <div className="max-w-6xl mx-auto">
-                {/* Section Header */}
-                <h2 className="text-5xl font-bold text-center mb-4 bg-gradient-to-r from-electric-purple to-neon-sky bg-clip-text text-transparent">
-                    Professional Experience
-                </h2>
-                <p className="text-center text-white/60 mb-16 text-lg">
-                    Skills, experience, and education
-                </p>
-
-                <div className="space-y-8">
-                    {/* Personal Info */}
-                    <GlassCard className="p-8 mb-8">
-                        <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
-                            {/* Profile Picture */}
+                {/* Personal Info Header */}
+                <ScrollReveal>
+                    <GlassCard className="mb-16 p-8 md:p-12 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-electric-purple/10 rounded-full blur-3xl group-hover:bg-neon-cyan/20 transition-all duration-500"></div>
+                        <div className="flex flex-col md:flex-row gap-8 items-center">
                             {resume.personalInfo.profileImageUrl && (
                                 <div className="flex-shrink-0">
                                     <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-neon-cyan/50 shadow-lg shadow-neon-cyan/30">
@@ -81,108 +61,103 @@ export default function ResumeSection() {
                                     </div>
                                 </div>
                             )}
-
-                            {/* Personal Details */}
-                            <div className="flex-1">
-                                <h3 className="text-3xl font-bold text-white mb-2">{resume.personalInfo.name}</h3>
-                                <p className="text-xl text-neon-cyan mb-4">{resume.personalInfo.title}</p>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-white/70">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-neon-sky">📧</span>
-                                        <a href={`mailto:${resume.personalInfo.email}`} className="hover:text-neon-cyan transition-colors">
-                                            {resume.personalInfo.email}
-                                        </a>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-neon-sky">📱</span>
-                                        <span>{resume.personalInfo.phone}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-neon-sky">📍</span>
-                                        <span>{resume.personalInfo.location}</span>
-                                    </div>
-                                </div>
-
-                                <p className="mt-4 text-white/80 leading-relaxed">{resume.personalInfo.summary}</p>
+                            <div className="text-center md:text-left">
+                                <h2 className="text-4xl md:text-5xl font-bold mb-2 text-white">{resume.personalInfo.name}</h2>
+                                <p className="text-xl md:text-2xl text-neon-cyan font-light mb-6">{resume.personalInfo.title}</p>
+                                <p className="text-white/70 max-w-3xl leading-relaxed text-lg italic">
+                                    "{resume.personalInfo.summary}"
+                                </p>
                             </div>
                         </div>
                     </GlassCard>
+                </ScrollReveal>
 
-                    {/* Experience */}
-                    <div>
-                        <h3 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                            <span className="w-2 h-8 bg-gradient-to-b from-electric-purple to-neon-cyan rounded-full"></span>
-                            Work Experience
-                        </h3>
-                        <div className="space-y-6">
-                            {resume.experience.map((exp) => (
-                                <GlassCard key={exp.id} className="p-6">
-                                    <div className="flex justify-between items-start mb-3 flex-wrap gap-2">
-                                        <div>
-                                            <h4 className="text-xl font-bold text-white">{exp.position}</h4>
-                                            <p className="text-neon-cyan font-medium">{exp.company}</p>
-                                        </div>
-                                        <span className="text-white/60 text-sm">{exp.duration}</span>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    {/* Left Column: Experience */}
+                    <div className="lg:col-span-2 space-y-8">
+                        <ScrollReveal>
+                            <h3 className="text-3xl font-bold mb-8 flex items-center gap-3">
+                                <span className="w-8 h-1 bg-electric-purple rounded-full"></span>
+                                Experience
+                            </h3>
+                        </ScrollReveal>
+
+                        {resume.experience.map((exp, index) => (
+                            <ScrollReveal key={index} delay={index * 150}>
+                                <GlassCard className="p-8 hover:border-electric-purple/50 transition-colors">
+                                    <div className="flex flex-col md:flex-row justify-between mb-4 gap-2">
+                                        <h4 className="text-2xl font-bold text-white">{exp.position}</h4>
+                                        <span className="text-neon-cyan font-mono bg-neon-cyan/10 px-3 py-1 rounded text-sm self-start">
+                                            {exp.duration}
+                                        </span>
                                     </div>
-                                    <ul className="space-y-2 text-white/70">
-                                        {exp.responsibilities.map((resp, index) => (
-                                            <li key={index} className="flex gap-2">
-                                                <span className="text-neon-cyan mt-1.5">•</span>
-                                                <span>{resp}</span>
+                                    <p className="text-lg text-white/90 font-medium mb-4">{exp.company}</p>
+                                    <ul className="space-y-3">
+                                        {exp.responsibilities.map((resp, i) => (
+                                            <li key={i} className="text-white/70 flex gap-3 text-sm">
+                                                <span className="text-electric-purple mt-1 flex-shrink-0">▹</span>
+                                                {resp}
                                             </li>
                                         ))}
                                     </ul>
                                 </GlassCard>
-                            ))}
-                        </div>
+                            </ScrollReveal>
+                        ))}
                     </div>
 
-                    {/* Skills */}
-                    <div>
-                        <h3 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                            <span className="w-2 h-8 bg-gradient-to-b from-neon-cyan to-electric-purple rounded-full"></span>
-                            Skills
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {resume.skills.map((skillGroup, index) => (
-                                <GlassCard key={index} className="p-6">
-                                    <h4 className="text-lg font-bold text-neon-cyan mb-3">{skillGroup.category}</h4>
-                                    <div className="flex flex-wrap gap-2">
-                                        {skillGroup.items.map((skill, idx) => (
-                                            <span
-                                                key={idx}
-                                                className="px-3 py-1 text-sm bg-electric-indigo/30 border border-electric-purple/40 rounded-full text-white"
-                                            >
-                                                {skill}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </GlassCard>
-                            ))}
-                        </div>
-                    </div>
+                    {/* Right Column: Skills & Education */}
+                    <div className="space-y-12">
+                        {/* Skills */}
+                        <section>
+                            <ScrollReveal>
+                                <h3 className="text-3xl font-bold mb-8 flex items-center gap-3">
+                                    <span className="w-8 h-1 bg-neon-cyan rounded-full"></span>
+                                    Skills
+                                </h3>
+                            </ScrollReveal>
+                            <div className="space-y-6">
+                                {resume.skills.map((skillGroup, index) => (
+                                    <ScrollReveal key={index} delay={index * 100}>
+                                        <GlassCard className="p-6">
+                                            <h4 className="text-lg font-bold text-neon-cyan mb-4 uppercase tracking-wider">
+                                                {skillGroup.category}
+                                            </h4>
+                                            <div className="flex flex-wrap gap-2">
+                                                {skillGroup.items.map((skill, i) => (
+                                                    <span
+                                                        key={i}
+                                                        className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-sm text-white/80 hover:bg-white/10 transition-colors"
+                                                    >
+                                                        {skill}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </GlassCard>
+                                    </ScrollReveal>
+                                ))}
+                            </div>
+                        </section>
 
-                    {/* Education */}
-                    <div>
-                        <h3 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                            <span className="w-2 h-8 bg-gradient-to-b from-neon-sky to-electric-indigo rounded-full"></span>
-                            Education
-                        </h3>
-                        <div className="space-y-6">
-                            {resume.education.map((edu) => (
-                                <GlassCard key={edu.id} className="p-6">
-                                    <div className="flex justify-between items-start flex-wrap gap-2">
-                                        <div>
-                                            <h4 className="text-xl font-bold text-white">{edu.degree}</h4>
-                                            <p className="text-neon-cyan">{edu.institution}</p>
-                                            {edu.field && <p className="text-white/60 text-sm mt-1">{edu.field}</p>}
-                                        </div>
-                                        <span className="text-white/60 text-sm">{edu.year}</span>
-                                    </div>
-                                </GlassCard>
-                            ))}
-                        </div>
+                        {/* Education */}
+                        <section>
+                            <ScrollReveal>
+                                <h3 className="text-3xl font-bold mb-8 flex items-center gap-3">
+                                    <span className="w-8 h-1 bg-neon-sky rounded-full"></span>
+                                    Education
+                                </h3>
+                            </ScrollReveal>
+                            <div className="space-y-6">
+                                {resume.education.map((edu, index) => (
+                                    <ScrollReveal key={edu.id || index} delay={index * 100}>
+                                        <GlassCard className="p-6">
+                                            <h4 className="text-xl font-bold text-white mb-1">{edu.degree}</h4>
+                                            <p className="text-neon-sky text-sm mb-2">{edu.institution}</p>
+                                            <p className="text-white/50 text-xs font-mono">{edu.year}</p>
+                                        </GlassCard>
+                                    </ScrollReveal>
+                                ))}
+                            </div>
+                        </section>
                     </div>
                 </div>
             </div>

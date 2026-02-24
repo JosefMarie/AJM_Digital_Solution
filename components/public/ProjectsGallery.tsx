@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { getProjects } from '@/lib/firebase/firestore';
 import { Project } from '@/lib/types';
 import GlassCard from '../ui/GlassCard';
+import ScrollReveal from '../ui/ScrollReveal';
 
 export default function ProjectsGallery() {
     const [projects, setProjects] = useState<Project[]>([]);
@@ -15,7 +16,7 @@ export default function ProjectsGallery() {
                 const data = await getProjects();
                 setProjects(data);
             } catch (error) {
-                console.error('Error loading projects:', error);
+                console.error('Error fetching projects:', error);
             } finally {
                 setLoading(false);
             }
@@ -43,12 +44,11 @@ export default function ProjectsGallery() {
         <section id="projects" className="min-h-screen px-6 py-20">
             <div className="max-w-7xl mx-auto">
                 {/* Section Header */}
-                <h2 className="text-5xl font-bold text-center mb-4 bg-gradient-to-r from-neon-cyan to-electric-purple bg-clip-text text-transparent">
-                    Featured Projects
-                </h2>
-                <p className="text-center text-white/60 mb-16 text-lg">
-                    A selection of my recent work and contributions
-                </p>
+                <ScrollReveal>
+                    <h2 className="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-neon-cyan to-electric-purple bg-clip-text text-transparent">
+                        Featured Projects
+                    </h2>
+                </ScrollReveal>
 
                 {/* Projects Grid */}
                 {projects.length === 0 ? (
@@ -57,61 +57,61 @@ export default function ProjectsGallery() {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {projects.map((project) => (
-                            <GlassCard key={project.id} className="p-6 hover" hover>
-                                {/* Project Image */}
-                                {project.imageUrl && (
-                                    <div className="w-full h-48 mb-4 rounded-lg overflow-hidden bg-void-800">
-                                        <img
-                                            src={project.imageUrl}
-                                            alt={project.title}
-                                            className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                                        />
+                        {projects.map((project, index) => (
+                            <ScrollReveal key={project.id} delay={index * 100}>
+                                <GlassCard className="group h-full flex flex-col overflow-hidden">
+                                    {project.imageUrl && (
+                                        <div className="relative h-48 overflow-hidden">
+                                            <img
+                                                src={project.imageUrl}
+                                                alt={project.title}
+                                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-void-900 to-transparent opacity-60"></div>
+                                        </div>
+                                    )}
+                                    <div className="p-6 flex-grow flex flex-col">
+                                        <h3 className="text-2xl font-bold mb-3 text-white group-hover:text-neon-cyan transition-colors">
+                                            {project.title}
+                                        </h3>
+                                        <p className="text-white/70 mb-6 line-clamp-3 text-sm flex-grow">
+                                            {project.description}
+                                        </p>
+                                        <div className="flex flex-wrap gap-2 mb-6">
+                                            {project.techStack.map((tech) => (
+                                                <span
+                                                    key={tech}
+                                                    className="px-3 py-1 text-xs rounded-full bg-electric-purple/20 border border-electric-purple/30 text-neon-cyan"
+                                                >
+                                                    {tech}
+                                                </span>
+                                            ))}
+                                        </div>
+                                        <div className="flex gap-4 mt-auto">
+                                            {project.githubLink && (
+                                                <a
+                                                    href={project.githubLink}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-white/60 hover:text-white transition-colors"
+                                                >
+                                                    GitHub
+                                                </a>
+                                            )}
+                                            {project.liveLink && (
+                                                <a
+                                                    href={project.liveLink}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-white/60 hover:text-white transition-colors"
+                                                >
+                                                    Live Demo
+                                                </a>
+                                            )}
+                                        </div>
                                     </div>
-                                )}
-
-                                {/* Project Title */}
-                                <h3 className="text-2xl font-bold text-white mb-3">{project.title}</h3>
-
-                                {/* Project Description */}
-                                <p className="text-white/70 mb-4 leading-relaxed">{project.description}</p>
-
-                                {/* Tech Stack */}
-                                <div className="flex flex-wrap gap-2 mb-4">
-                                    {project.techStack.map((tech, index) => (
-                                        <span
-                                            key={index}
-                                            className="px-3 py-1 text-sm bg-electric-indigo/30 border border-electric-purple/40 rounded-full text-neon-cyan font-medium"
-                                        >
-                                            {tech}
-                                        </span>
-                                    ))}
-                                </div>
-
-                                {/* Links */}
-                                <div className="flex gap-3">
-                                    {project.githubLink && (
-                                        <a
-                                            href={project.githubLink}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white font-medium transition-all duration-200"
-                                        >
-                                            GitHub
-                                        </a>
-                                    )}
-                                    {project.liveLink && (
-                                        <a
-                                            href={project.liveLink}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="px-4 py-2 bg-gradient-to-r from-electric-purple to-neon-cyan hover:shadow-lg hover:shadow-neon-cyan/50 rounded-lg text-white font-medium transition-all duration-200"
-                                        >
-                                            Live Demo
-                                        </a>
-                                    )}
-                                </div>
-                            </GlassCard>
+                                </GlassCard>
+                            </ScrollReveal>
                         ))}
                     </div>
                 )}
