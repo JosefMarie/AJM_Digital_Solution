@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { getProjects, createProject, updateProject, deleteProject } from '@/lib/firebase/firestore';
 import { Project } from '@/lib/types';
 import GlassCard from '@/components/ui/GlassCard';
+import TagInput from '@/components/ui/TagInput';
 
 export default function AdminProjectsPage() {
     const router = useRouter();
@@ -189,15 +190,12 @@ export default function AdminProjectsPage() {
 
                         <div>
                             <label className="block text-sm font-medium text-white/80 mb-2">
-                                Tech Stack (comma-separated)
+                                Tech Stack (Press Enter or comma to add)
                             </label>
-                            <input
-                                type="text"
-                                value={formData.techStack}
-                                onChange={(e) => setFormData({ ...formData, techStack: e.target.value })}
-                                required
-                                placeholder="Next.js, TypeScript, Tailwind CSS"
-                                className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-neon-cyan focus:ring-2 focus:ring-neon-cyan/20"
+                            <TagInput
+                                tags={formData.techStack ? formData.techStack.split(',').map(t => t.trim()).filter(t => t) : []}
+                                setTags={(newTags) => setFormData({ ...formData, techStack: newTags.join(', ') })}
+                                placeholder="Add tech (e.g., Next.js)"
                             />
                         </div>
 

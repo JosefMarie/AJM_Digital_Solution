@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { getResume, updateResume, createResume } from '@/lib/firebase/firestore';
 import { Resume, Experience, Skill, Education } from '@/lib/types';
 import GlassCard from '@/components/ui/GlassCard';
+import TagInput from '@/components/ui/TagInput';
 
 export default function AdminResumePage() {
     const [resume, setResume] = useState<Resume | null>(null);
@@ -542,16 +543,11 @@ export default function AdminResumePage() {
                                     className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white"
                                 />
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-2">Skills (comma-separated)</label>
-                                    <input
-                                        type="text"
-                                        placeholder="React, Next.js, TypeScript"
-                                        value={editingSkill.items.join(', ')}
-                                        onChange={(e) => setEditingSkill({
-                                            ...editingSkill,
-                                            items: e.target.value.split(',').map(s => s.trim()).filter(s => s)
-                                        })}
-                                        className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white"
+                                    <label className="block text-sm text-white/70 mb-2">Skills (Press Enter or comma to add)</label>
+                                    <TagInput
+                                        tags={editingSkill.items}
+                                        setTags={(newTags) => setEditingSkill({ ...editingSkill, items: newTags })}
+                                        placeholder="Add a skill (e.g., React)"
                                     />
                                 </div>
                                 <div className="flex gap-3">
