@@ -13,7 +13,7 @@ import {
     Timestamp,
 } from 'firebase/firestore';
 import { db } from './config';
-import { Project, Resume } from '../types';
+import { Project, Resume, AppSettings } from '../types';
 
 // ===== PROJECTS CRUD =====
 
@@ -126,6 +126,49 @@ export const updateResume = async (
         });
     } catch (error) {
         console.error('Error updating resume:', error);
+        throw error;
+    }
+};
+// ===== SETTINGS CRUD =====
+const SETTINGS_DOC_ID = 'app_settings';
+
+export const getSettings = async (): Promise<AppSettings> => {
+    const defaultSettings: AppSettings = {
+        accentColor: '#22d3ee',
+        secondaryColor: '#7c3aed',
+        siteName: 'AJM Digital Solution',
+        updatedAt: new Date(),
+    };
+
+    try {
+        const settingsRef = doc(db, 'settings', SETTINGS_DOC_ID);
+        const snapshot = await getDoc(settingsRef);
+        if (snapshot.exists()) {
+            return {
+                id: snapshot.id,
+                ...snapshot.data(),
+                updatedAt: snapshot.data().updatedAt?.toDate(),
+            } as AppSettings;
+        }
+
+        return defaultSettings;
+    } catch (error) {
+        console.error('Error fetching settings (using defaults):', error);
+        return defaultSettings;
+    }
+};
+
+export const updateSettings = async (
+    settingsData: Omit<AppSettings, 'id' | 'updatedAt'>
+): Promise<void> => {
+    try {
+        const settingsRef = doc(db, 'settings', SETTINGS_DOC_ID);
+        await setDoc(settingsRef, {
+            ...settingsData,
+            updatedAt: Timestamp.now(),
+        });
+    } catch (error) {
+        console.error('Error updating settings:', error);
         throw error;
     }
 };

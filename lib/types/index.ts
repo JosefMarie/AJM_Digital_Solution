@@ -58,3 +58,10 @@ export interface Resume {
   languages?: string[];
   updatedAt: Date;
 }
+export interface AppSettings {
+  id?: string;
+  accentColor: string;
+  secondaryColor: string;
+  siteName: string;
+  updatedAt: Date;
+}

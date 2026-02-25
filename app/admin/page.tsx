@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import GlassCard from '@/components/ui/GlassCard';
 
@@ -42,9 +44,26 @@ export default function AdminDashboard() {
                         </div>
                     </GlassCard>
                 </Link>
+
+                {/* System Settings Card */}
+                <Link href="/admin/settings">
+                    <GlassCard className="p-8 hover cursor-pointer border-neon-cyan/20" hover>
+                        <div className="w-16 h-16 mb-4 rounded-full bg-gradient-to-br from-neon-cyan to-electric-purple flex items-center justify-center">
+                            <span className="text-3xl">⚙️</span>
+                        </div>
+                        <h3 className="text-2xl font-bold text-white mb-3">System Settings</h3>
+                        <p className="text-white/70 mb-4">
+                            Customize the application appearance, accent colors, and global site configurations.
+                        </p>
+                        <div className="text-neon-cyan font-medium flex items-center gap-2">
+                            Open System Settings
+                            <span>→</span>
+                        </div>
+                    </GlassCard>
+                </Link>
             </div>
 
-            {/* Quick Stats */}
+            {/* Quick Actions */}
             <div className="mt-12">
                 <h3 className="text-2xl font-bold text-white mb-6">Quick Actions</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -71,3 +90,4 @@ export default function AdminDashboard() {
         </div>
     );
 }
+

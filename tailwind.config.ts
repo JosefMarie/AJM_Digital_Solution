@@ -19,19 +19,19 @@ const config: Config = {
                 },
                 // The vibrant purple/indigo tones
                 electric: {
-                    purple: "#7c3aed",
+                    purple: "var(--secondary-color)",
                     violet: "#4c1d95",
                     indigo: "#3730a3",
                 },
                 // The bright cyan highlights
                 neon: {
-                    cyan: "#22d3ee",
+                    cyan: "var(--accent-color)",
                     sky: "#0ea5e9",
                 },
             },
             backgroundImage: {
                 // A custom gradient that mimics the fluid aesthetic
-                'fluid-gradient': "linear-gradient(to bottom right, #020617, #3730a3, #7c3aed, #22d3ee)",
+                'fluid-gradient': "linear-gradient(to bottom right, #020617, #3730a3, var(--secondary-color), var(--accent-color))",
             },
             animation: {
                 'blob': 'blob 7s infinite',
