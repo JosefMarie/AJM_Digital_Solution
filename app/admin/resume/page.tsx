@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getResume, updateResume, createResume } from '@/lib/firebase/firestore';
-import { Resume, Experience, Skill, Education } from '@/lib/types';
+import { Resume, Experience, Skill, Education, Language } from '@/lib/types';
 import GlassCard from '@/components/ui/GlassCard';
 import TagInput from '@/components/ui/TagInput';
 
@@ -18,9 +18,12 @@ export default function AdminResumePage() {
     const [editingExperience, setEditingExperience] = useState<Experience | null>(null);
     const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
     const [editingEducation, setEditingEducation] = useState<Education | null>(null);
+    const [editingLanguage, setEditingLanguage] = useState<Language | null>(null);
     const [showExpForm, setShowExpForm] = useState(false);
     const [showSkillForm, setShowSkillForm] = useState(false);
     const [showEduForm, setShowEduForm] = useState(false);
+    const [showLangForm, setShowLangForm] = useState(false);
+    const [editingLangIndex, setEditingLangIndex] = useState<number | null>(null);
 
     useEffect(() => {
         fetchResume();
@@ -74,6 +77,9 @@ export default function AdminResumePage() {
                         field: 'Computer Science',
                         year: '2016 - 2020',
                     },
+                ],
+                languages: [
+                    { name: 'English', level: 'Native' }
                 ],
             };
 
@@ -228,6 +234,47 @@ export default function AdminResumePage() {
         setResume({
             ...resume,
             education: resume.education.filter(e => e.id !== id),
+        });
+    };
+
+    // Language handlers
+    const handleAddLanguage = () => {
+        const newLang: Language = { name: '', level: 'Native' };
+        setEditingLanguage(newLang);
+        setEditingLangIndex(null);
+        setShowLangForm(true);
+    };
+
+    const handleEditLanguage = (lang: Language, index: number) => {
+        setEditingLanguage({ ...lang });
+        setEditingLangIndex(index);
+        setShowLangForm(true);
+    };
+
+    const handleSaveLanguage = () => {
+        if (!resume || !editingLanguage) return;
+
+        let updatedLanguages = [...(resume.languages || [])];
+
+        if (editingLangIndex !== null) {
+            updatedLanguages[editingLangIndex] = editingLanguage;
+        } else {
+            updatedLanguages.push(editingLanguage);
+        }
+
+        setResume({ ...resume, languages: updatedLanguages });
+        setEditingLanguage(null);
+        setEditingLangIndex(null);
+        setShowLangForm(false);
+    };
+
+    const handleDeleteLanguage = (index: number) => {
+        if (!resume || !confirm('Delete this language?')) return;
+        const updatedLanguages = [...(resume.languages || [])];
+        updatedLanguages.splice(index, 1);
+        setResume({
+            ...resume,
+            languages: updatedLanguages,
         });
     };
 
@@ -731,6 +778,92 @@ export default function AdminResumePage() {
                                         <button
                                             onClick={() => handleDeleteEducation(edu.id)}
                                             className="px-3 py-1 text-sm bg-red-500/20 hover:bg-red-500/30 rounded text-red-200"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </GlassCard>
+
+                {/* Languages Section */}
+                <GlassCard className="p-6">
+                    <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-2xl font-bold text-white">Languages ({(resume.languages || []).length})</h3>
+                        <button
+                            onClick={handleAddLanguage}
+                            className="px-4 py-2 bg-gradient-to-r from-electric-purple to-neon-cyan rounded-lg text-white font-medium hover:shadow-lg transition-all"
+                        >
+                            + Add Language
+                        </button>
+                    </div>
+
+                    {showLangForm && editingLanguage && (
+                        <div className="mb-6 p-4 bg-void-800/30 rounded-lg border border-neon-cyan/30">
+                            <h4 className="text-lg font-bold text-white mb-4">
+                                {editingLangIndex !== null ? 'Edit' : 'Add'} Language
+                            </h4>
+                            <div className="space-y-4">
+                                <input
+                                    type="text"
+                                    placeholder="Language (e.g., English)"
+                                    value={editingLanguage.name}
+                                    onChange={(e) => setEditingLanguage({ ...editingLanguage, name: e.target.value })}
+                                    className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white"
+                                />
+                                <select
+                                    value={editingLanguage.level}
+                                    onChange={(e) => setEditingLanguage({ ...editingLanguage, level: e.target.value })}
+                                    className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-cyan focus:ring-2 focus:ring-neon-cyan/20"
+                                >
+                                    <option value="" disabled className="bg-void-900 text-white/40">Select Proficiency Level</option>
+                                    <option value="Native" className="bg-void-900 text-white">Native</option>
+                                    <option value="Fluent" className="bg-void-900 text-white">Fluent</option>
+                                    <option value="Advanced (C1/C2)" className="bg-void-900 text-white">Advanced (C1/C2)</option>
+                                    <option value="Upper Intermediate (B2)" className="bg-void-900 text-white">Upper Intermediate (B2)</option>
+                                    <option value="Intermediate (B1)" className="bg-void-900 text-white">Intermediate (B1)</option>
+                                    <option value="Pre-Intermediate (A2)" className="bg-void-900 text-white">Pre-Intermediate (A2)</option>
+                                    <option value="Elementary (A1)" className="bg-void-900 text-white">Elementary (A1)</option>
+                                    <option value="Beginner" className="bg-void-900 text-white">Beginner</option>
+                                </select>
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={handleSaveLanguage}
+                                        className="px-6 py-2 bg-gradient-to-r from-electric-purple to-neon-cyan rounded-lg text-white font-medium"
+                                    >
+                                        Save
+                                    </button>
+                                    <button
+                                        onClick={() => { setShowLangForm(false); setEditingLanguage(null); setEditingLangIndex(null); }}
+                                        className="px-6 py-2 bg-white/10 border border-white/20 rounded-lg text-white"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {(resume.languages || []).map((lang, idx) => (
+                            <div key={idx} className="p-4 bg-void-800/30 rounded-lg border border-white/5">
+                                <div className="flex justify-between items-start">
+                                    <div className="flex-1">
+                                        <p className="text-white font-bold">{lang.name}</p>
+                                        <p className="text-neon-cyan text-sm">{lang.level}</p>
+                                    </div>
+                                    <div className="flex gap-2 ml-4">
+                                        <button
+                                            onClick={() => handleEditLanguage(lang, idx)}
+                                            className="px-3 py-1 text-xs bg-white/10 hover:bg-white/20 rounded text-white"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteLanguage(idx)}
+                                            className="px-3 py-1 text-xs bg-red-500/20 hover:bg-red-500/30 rounded text-red-200"
                                         >
                                             Delete
                                         </button>

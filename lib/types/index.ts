@@ -51,6 +51,11 @@ export interface Education {
   gpa?: string;
 }
 
+export interface Language {
+  name: string;
+  level: string; // e.g., "Native", "Fluent", "Intermediate"
+}
+
 export interface Resume {
   id: string;
   personalInfo: PersonalInfo;
@@ -58,7 +63,7 @@ export interface Resume {
   skills: Skill[];
   education: Education[];
   certifications?: string[];
-  languages?: string[];
+  languages?: Language[];
   updatedAt: Date;
 }
 export interface AppSettings {

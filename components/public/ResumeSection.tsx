@@ -190,6 +190,28 @@ export default function ResumeSection() {
                                 ))}
                             </div>
                         </section>
+
+                        {/* Languages */}
+                        {resume.languages && resume.languages.length > 0 && (
+                            <section>
+                                <ScrollReveal>
+                                    <h3 className="text-3xl font-bold mb-8 flex items-center gap-3">
+                                        <span className="w-8 h-1 bg-electric-purple rounded-full"></span>
+                                        Languages
+                                    </h3>
+                                </ScrollReveal>
+                                <div className="space-y-6">
+                                    {resume.languages.map((lang, index) => (
+                                        <ScrollReveal key={index} delay={index * 100}>
+                                            <GlassCard className="p-6">
+                                                <h4 className="text-xl font-bold text-white mb-1">{lang.name}</h4>
+                                                <p className="text-neon-cyan text-sm">{lang.level}</p>
+                                            </GlassCard>
+                                        </ScrollReveal>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
                     </div>
                 </div>
             </div>
