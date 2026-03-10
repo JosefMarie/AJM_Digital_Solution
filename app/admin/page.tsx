@@ -61,6 +61,23 @@ export default function AdminDashboard() {
                         </div>
                     </GlassCard>
                 </Link>
+
+                {/* View Messages Card */}
+                <Link href="/admin/messages">
+                    <GlassCard className="p-8 hover cursor-pointer border-emerald-500/20" hover>
+                        <div className="w-16 h-16 mb-4 rounded-full bg-gradient-to-br from-emerald-500 to-neon-sky flex items-center justify-center">
+                            <span className="text-3xl">✉️</span>
+                        </div>
+                        <h3 className="text-2xl font-bold text-white mb-3">View Messages</h3>
+                        <p className="text-white/70 mb-4">
+                            Check and manage messages sent through the contact form on your portfolio website.
+                        </p>
+                        <div className="text-emerald-400 font-medium flex items-center gap-2">
+                            Open Message Inbox
+                            <span>→</span>
+                        </div>
+                    </GlassCard>
+                </Link>
             </div>
 
             {/* Quick Actions */}

@@ -21,21 +21,24 @@ export default function Hero() {
                         </ScrollReveal>
 
                         <ScrollReveal delay={400}>
-                            <h1 className="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-neon-cyan via-electric-purple to-neon-sky bg-clip-text text-transparent">
-                                Full-Stack Developer
+                            <h1 className="text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-neon-cyan via-electric-purple to-neon-sky bg-clip-text text-transparent">
+                                AJM Digital Solution
                             </h1>
+                            <p className="text-2xl md:text-3xl text-neon-cyan font-light mb-8">
+                                Full-Stack Engineer
+                            </p>
                         </ScrollReveal>
 
                         <ScrollReveal delay={600}>
-                            <p className="text-2xl md:text-3xl text-white/80 mb-6 font-light">
-                                Building beautiful, scalable web applications
+                            <p className="text-xl md:text-2xl text-white/80 mb-8 font-light italic">
+                                "Empowering Tomorrow, One Line at a Time"
                             </p>
                         </ScrollReveal>
 
                         <ScrollReveal delay={800}>
                             <p className="text-lg text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed">
                                 Specialized in Next.js, TypeScript, and modern web technologies.
-                                Passionate about creating elegant solutions to complex problems.
+                                Building beautiful, scalable applications for the future.
                             </p>
                         </ScrollReveal>
 

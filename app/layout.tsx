@@ -4,8 +4,8 @@ import FluidBackground from "@/components/ui/FluidBackground";
 import ThemeInitializer from "@/components/ThemeInitializer";
 
 export const metadata: Metadata = {
-    title: "Digital Portfolio | Full-Stack Developer",
-    description: "Professional portfolio showcasing projects and experience in Next.js, TypeScript, and modern web development",
+    title: "AJM Digital Portfolio | Full-Stack Engineer",
+    description: "Professional portfolio of AJM Digital Solution showcasing full-stack engineering expertise.",
 };
 
 export default function RootLayout({

@@ -13,7 +13,7 @@ import {
     Timestamp,
 } from 'firebase/firestore';
 import { db } from './config';
-import { Project, Resume, AppSettings } from '../types';
+import { Project, Resume, AppSettings, ContactMessage } from '../types';
 
 // ===== PROJECTS CRUD =====
 
@@ -172,3 +172,48 @@ export const updateSettings = async (
         throw error;
     }
 };
+
+// ===== CONTACT MESSAGES =====
+
+export const submitMessage = async (
+    messageData: Omit<ContactMessage, 'id' | 'createdAt'>
+): Promise<string> => {
+    try {
+        const messagesRef = collection(db, 'messages');
+        const docRef = await addDoc(messagesRef, {
+            ...messageData,
+            createdAt: Timestamp.now(),
+        });
+        return docRef.id;
+    } catch (error) {
+        console.error('Error submitting message:', error);
+        throw error;
+    }
+};
+
+export const getMessages = async (): Promise<ContactMessage[]> => {
+    try {
+        const messagesRef = collection(db, 'messages');
+        const q = query(messagesRef, orderBy('createdAt', 'desc'));
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate(),
+        })) as ContactMessage[];
+    } catch (error) {
+        console.error('Error fetching messages:', error);
+        throw error;
+    }
+};
+
+export const deleteMessage = async (id: string): Promise<void> => {
+    try {
+        const messageRef = doc(db, 'messages', id);
+        await deleteDoc(messageRef);
+    } catch (error) {
+        console.error('Error deleting message:', error);
+        throw error;
+    }
+};
+
