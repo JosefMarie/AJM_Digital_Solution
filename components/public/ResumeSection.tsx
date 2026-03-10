@@ -47,7 +47,7 @@ export default function ResumeSection() {
             <div className="max-w-6xl mx-auto">
                 {/* Personal Info Header */}
                 <ScrollReveal>
-                    <GlassCard className="mb-16 p-8 md:p-12 relative overflow-hidden group">
+                    <GlassCard hover className="mb-16 p-8 md:p-12 relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-electric-purple/10 rounded-full blur-3xl group-hover:bg-neon-cyan/20 transition-all duration-500"></div>
                         <div className="flex flex-col md:flex-row gap-8 items-center">
                             {resume.personalInfo.profileImageUrl && (
@@ -138,7 +138,7 @@ export default function ResumeSection() {
 
                         {resume.experience.map((exp, index) => (
                             <ScrollReveal key={index} delay={index * 150}>
-                                <GlassCard className="p-8 hover:border-electric-purple/50 transition-colors">
+                                <GlassCard hover className="p-8 hover:border-electric-purple/50 transition-colors">
                                     <div className="flex flex-col md:flex-row justify-between mb-4 gap-2">
                                         <h4 className="text-2xl font-bold text-white">{exp.position}</h4>
                                         <span className="text-neon-cyan font-mono bg-neon-cyan/10 px-3 py-1 rounded text-sm self-start">
@@ -172,7 +172,7 @@ export default function ResumeSection() {
                             <div className="space-y-6">
                                 {resume.skills.map((skillGroup, index) => (
                                     <ScrollReveal key={index} delay={index * 100}>
-                                        <GlassCard className="p-6">
+                                        <GlassCard hover className="p-6">
                                             <h4 className="text-lg font-bold text-neon-cyan mb-4 uppercase tracking-wider">
                                                 {skillGroup.category}
                                             </h4>
@@ -203,7 +203,7 @@ export default function ResumeSection() {
                             <div className="space-y-6">
                                 {resume.education.map((edu, index) => (
                                     <ScrollReveal key={edu.id || index} delay={index * 100}>
-                                        <GlassCard className="p-6">
+                                        <GlassCard hover className="p-6">
                                             <h4 className="text-xl font-bold text-white mb-1">{edu.degree}</h4>
                                             <p className="text-neon-sky text-sm mb-2">{edu.institution}</p>
                                             <p className="text-white/50 text-xs font-mono print:hidden">{edu.year}</p>
@@ -225,7 +225,7 @@ export default function ResumeSection() {
                                 <div className="space-y-6">
                                     {resume.languages.map((lang, index) => (
                                         <ScrollReveal key={index} delay={index * 100}>
-                                            <GlassCard className="p-6">
+                                            <GlassCard hover className="p-6">
                                                 <h4 className="text-xl font-bold text-white mb-1">{lang.name}</h4>
                                                 <p className="text-neon-cyan text-sm">{lang.level}</p>
                                             </GlassCard>

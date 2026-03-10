@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
 interface GlassCardProps {
     children: React.ReactNode;
@@ -9,65 +10,81 @@ interface GlassCardProps {
 }
 
 export default function GlassCard({ children, className = '', hover = false }: GlassCardProps) {
-    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-    const [isHovered, setIsHovered] = useState(false);
     const cardRef = useRef<HTMLDivElement>(null);
+    const [isHovered, setIsHovered] = useState(false);
+
+    // Motion values for mouse position
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+
+    // Smooth spring physics for rotation
+    const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [10, -10]), { damping: 20, stiffness: 200 });
+    const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-10, 10]), { damping: 20, stiffness: 200 });
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (!cardRef.current) return;
         const rect = cardRef.current.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        setMousePos({ x, y });
+        
+        // Calculate normalized mouse position (-0.5 to 0.5)
+        const mouseX = (e.clientX - rect.left) / rect.width - 0.5;
+        const mouseY = (e.clientY - rect.top) / rect.height - 0.5;
+        
+        x.set(mouseX);
+        y.set(mouseY);
     };
 
-    // Calculate rotation based on mouse position relative to center
-    const getRotation = () => {
-        if (!isHovered || !cardRef.current) return 'rotateX(0deg) rotateY(0deg)';
-        const rect = cardRef.current.getBoundingClientRect();
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateY = ((mousePos.x - centerX) / centerX) * 5; // max 5 degrees
-        const rotateX = ((centerY - mousePos.y) / centerY) * 5; // max 5 degrees
-        return `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    // Liquid Shine Glint effect
+    const background = useTransform(
+        [x, y],
+        ([latestX, latestY]) => {
+            const pxX = (Number(latestX) + 0.5) * 100;
+            const pxY = (Number(latestY) + 0.5) * 100;
+            return `radial-gradient(600px circle at ${pxX}% ${pxY}%, rgba(255,255,255,0.1), transparent 40%)`;
+        }
+    );
+
+    const handleMouseLeave = () => {
+        setIsHovered(false);
+        x.set(0);
+        y.set(0);
     };
 
     return (
-        <div
+        <motion.div
             ref={cardRef}
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => {
-                setIsHovered(false);
-                setMousePos({ x: 0, y: 0 });
-            }}
+            onMouseLeave={handleMouseLeave}
+            whileHover={hover ? { scale: 1.02, transition: { duration: 0.2 } } : {}}
+            whileTap={hover ? { scale: 0.98 } : {}}
             className={`
                 relative overflow-hidden
                 backdrop-blur-xl bg-white/5 
                 border border-white/10 
                 rounded-2xl shadow-2xl
-                transition-transform duration-200 ease-out
-                ${hover ? 'hover:bg-white/10 hover:border-white/20 hover:shadow-neon-cyan/20' : ''}
+                ${hover ? 'cursor-pointer hover:border-white/20' : ''}
                 ${className}
             `}
             style={{
-                transform: getRotation(),
+                perspective: '1000px',
+                rotateX: hover ? rotateX : 0,
+                rotateY: hover ? rotateY : 0,
+                transformStyle: 'preserve-3d',
             }}
         >
             {/* Liquid Shine Glint */}
-            {isHovered && (
-                <div
-                    className="pointer-events-none absolute inset-0 opacity-40 transition-opacity duration-300"
-                    style={{
-                        background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(255,255,255,0.08), transparent 40%)`,
-                    }}
+            {hover && isHovered && (
+                <motion.div
+                    className="pointer-events-none absolute inset-0 opacity-40"
+                    style={{ background }}
                 />
             )}
 
-            <div className="relative z-10">
+            <div className="relative z-10" style={{ transform: 'translateZ(20px)' }}>
                 {children}
             </div>
-        </div>
+        </motion.div>
     );
 }
+
 

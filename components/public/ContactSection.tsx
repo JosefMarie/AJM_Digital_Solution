@@ -122,7 +122,7 @@ export default function ContactSection() {
 
                     {/* Contact Form */}
                     <ScrollReveal delay={400}>
-                        <GlassCard className="p-8 md:p-10">
+                        <GlassCard hover className="p-8 md:p-10">
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">

@@ -59,7 +59,7 @@ export default function ProjectsGallery() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {projects.map((project, index) => (
                             <ScrollReveal key={project.id} delay={index * 100}>
-                                <GlassCard className="group h-full flex flex-col overflow-hidden">
+                                <GlassCard hover className="group h-full flex flex-col overflow-hidden">
                                     {project.imageUrl && (
                                         <div className="relative h-48 overflow-hidden">
                                             <img

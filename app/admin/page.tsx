@@ -84,20 +84,20 @@ export default function AdminDashboard() {
             <div className="mt-12">
                 <h3 className="text-2xl font-bold text-white mb-6">Quick Actions</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <GlassCard className="p-6">
+                    <GlassCard hover className="p-6">
                         <div className="text-3xl mb-2">🏠</div>
                         <a href="/" target="_blank" className="text-neon-cyan hover:underline font-medium">
                             View Public Portfolio
                         </a>
                     </GlassCard>
 
-                    <GlassCard className="p-6">
+                    <GlassCard hover className="p-6">
                         <div className="text-3xl mb-2">📊</div>
                         <p className="text-white/70">Analytics</p>
                         <p className="text-sm text-white/50 mt-1">Coming soon...</p>
                     </GlassCard>
 
-                    <GlassCard className="p-6">
+                    <GlassCard hover className="p-6">
                         <div className="text-3xl mb-2">⚙️</div>
                         <p className="text-white/70">Settings</p>
                         <p className="text-sm text-white/50 mt-1">Coming soon...</p>

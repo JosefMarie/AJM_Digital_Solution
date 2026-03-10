@@ -74,7 +74,9 @@ export default function AdminMessagesPage() {
                                             {msg.subject}
                                         </span>
                                         <span className="text-white/30 text-xs font-mono">
-                                            {msg.createdAt.toLocaleDateString()} {msg.createdAt.toLocaleTimeString()}
+                                            {msg.createdAt instanceof Date 
+                                                ? `${msg.createdAt.toLocaleDateString()} ${msg.createdAt.toLocaleTimeString()}`
+                                                : 'No date available'}
                                         </span>
                                     </div>
                                     
