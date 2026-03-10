@@ -19,6 +19,8 @@ export interface PersonalInfo {
   phone: string;
   location: string;
   summary: string;
+  coreObjectives?: string;
+  myVision?: string;
   profileImageUrl?: string; // Profile picture URL
   resumePdfUrl?: string; // Link to download resume PDF
   linkedin?: string;

@@ -67,6 +67,27 @@ export default function ResumeSection() {
                                 <p className="text-white/70 max-w-3xl leading-relaxed text-lg italic mb-6">
                                     "{resume.personalInfo.summary}"
                                 </p>
+                                
+                                {resume.personalInfo.coreObjectives && (
+                                    <div className="mb-4">
+                                        <h4 className="text-lg font-bold text-white mb-2">Core Objectives</h4>
+                                        <ul className="text-white/70 max-w-3xl leading-relaxed space-y-2 list-disc list-inside">
+                                            {resume.personalInfo.coreObjectives.split('\n').filter(line => line.trim() !== '').map((objective, i) => (
+                                                <li key={i}>{objective.trim()}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                                
+                                {resume.personalInfo.myVision && (
+                                    <div className="mb-6">
+                                        <h4 className="text-lg font-bold text-white mb-2">My Vision</h4>
+                                        <p className="text-white/70 max-w-3xl leading-relaxed">
+                                            {resume.personalInfo.myVision}
+                                        </p>
+                                    </div>
+                                )}
+
                                 <div className="flex gap-4 flex-wrap print-hide">
                                     <button
                                         onClick={() => window.print()}

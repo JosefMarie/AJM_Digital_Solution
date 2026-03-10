@@ -48,6 +48,8 @@ export default function AdminResumePage() {
                     phone: '+1234567890',
                     location: 'City, Country',
                     summary: 'Your professional summary here...',
+                    coreObjectives: '',
+                    myVision: '',
                     profileImageUrl: '',
                     resumePdfUrl: '',
                 },
@@ -430,6 +432,40 @@ export default function AdminResumePage() {
                             rows={4}
                             className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-cyan focus:ring-2 focus:ring-neon-cyan/20"
                         />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <label className="block text-sm font-medium text-white/80 mb-2">Core Objectives (Each line will be a list item)</label>
+                            <textarea
+                                value={resume.personalInfo.coreObjectives || ''}
+                                onChange={(e) =>
+                                    setResume({
+                                        ...resume,
+                                        personalInfo: { ...resume.personalInfo, coreObjectives: e.target.value },
+                                    })
+                                }
+                                rows={4}
+                                className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-cyan focus:ring-2 focus:ring-neon-cyan/20"
+                                placeholder="Write your core objectives here..."
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-white/80 mb-2">My Vision</label>
+                            <textarea
+                                value={resume.personalInfo.myVision || ''}
+                                onChange={(e) =>
+                                    setResume({
+                                        ...resume,
+                                        personalInfo: { ...resume.personalInfo, myVision: e.target.value },
+                                    })
+                                }
+                                rows={4}
+                                className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-cyan focus:ring-2 focus:ring-neon-cyan/20"
+                                placeholder="Write your vision here..."
+                            />
+                        </div>
                     </div>
                 </GlassCard>
 

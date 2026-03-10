@@ -119,9 +119,11 @@ html {
     background: white !important;
     color: black !important;
     height: auto !important;
-    min-height: auto !important;
+    min-height: 0 !important;
     overflow: visible !important;
     position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   /* Hide non-resume sections */
@@ -134,26 +136,75 @@ html {
 
   /* Force readable colors and disable complex backgrounds */
   #resume,
-  #resume * {
+  #resume *,
+  #resume::before,
+  #resume::after {
     color: black !important;
     background: transparent !important;
     box-shadow: none !important;
-    border: none !important;
+    border-color: #ccc !important;
     text-shadow: none !important;
     height: auto !important;
-    min-height: auto !important;
+    min-height: 0 !important;
     overflow: visible !important;
     transform: none !important;
     perspective: none !important;
+    transition: none !important;
+    animation: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Reset flex/grid layouts that might break pages */
+  #resume .grid {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  #resume .lg\:col-span-2,
+  #resume .col-span-1 {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+  }
+
+  /* Make sure spacing isn't creating blank pages */
+  #resume .min-h-screen {
+    min-height: 0 !important;
+  }
+
+  #resume .py-20 {
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+  }
+
+  #resume .mb-16 {
+    margin-bottom: 20px !important;
+  }
+
+  #resume .space-y-8>*+*,
+  #resume .space-y-12>*+* {
+    margin-top: 20px !important;
   }
 
   /* Use simple borders for cards instead of backgrounds */
-  #resume .rounded-2xl {
-    border: 1px solid #ccc !important;
-    page-break-inside: avoid;
-    break-inside: avoid;
-    margin-bottom: 2rem !important;
+  #resume .rounded-2xl,
+  #resume .rounded-xl,
+  #resume .rounded-lg,
+  .glass-card {
+    border: 1px solid #ddd !important;
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+    margin-bottom: 20px !important;
     position: static !important;
+    display: block !important;
+  }
+
+  /* Avoid page break inside sections */
+  #resume section {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+    display: block !important;
   }
 
   /* Hide elements exclusively for print */
@@ -161,38 +212,35 @@ html {
     display: none !important;
   }
 
-  /* Reset layout constraints */
-  #resume {
-    padding: 0 !important;
-    margin: 0 !important;
-    position: static !important;
-  }
-
-  /* Make sure columns layout nicely without flex wrap */
-  .grid {
-    display: block !important;
-  }
-
-  .grid>div {
-    margin-bottom: 2rem !important;
-  }
-
-  /* Force all ScrollReveal elements to be visible */
+  /* Ensure ScrollReveal visibility */
   .reveal {
     opacity: 1 !important;
     transform: none !important;
-    transition: none !important;
-    position: static !important;
   }
 
   /* Prevent awkward page breaks for text */
-  p,
   h2,
   h3,
-  h4,
+  h4 {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+    color: black !important;
+  }
+
+  p,
   li,
   ul {
-    page-break-inside: avoid;
-    break-inside: avoid;
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+    color: black !important;
+  }
+
+  /* Ensure SVG icons print */
+  svg {
+    color: black !important;
+    stroke: black !important;
+    fill: none !important;
   }
 }
