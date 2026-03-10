@@ -20,6 +20,7 @@ export interface PersonalInfo {
   location: string;
   summary: string;
   profileImageUrl?: string; // Profile picture URL
+  resumePdfUrl?: string; // Link to download resume PDF
   linkedin?: string;
   github?: string;
   portfolio?: string;

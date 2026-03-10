@@ -64,9 +64,20 @@ export default function ResumeSection() {
                             <div className="text-center md:text-left">
                                 <h2 className="text-4xl md:text-5xl font-bold mb-2 text-white">{resume.personalInfo.name}</h2>
                                 <p className="text-xl md:text-2xl text-neon-cyan font-light mb-6">{resume.personalInfo.title}</p>
-                                <p className="text-white/70 max-w-3xl leading-relaxed text-lg italic">
+                                <p className="text-white/70 max-w-3xl leading-relaxed text-lg italic mb-6">
                                     "{resume.personalInfo.summary}"
                                 </p>
+                                <div className="flex gap-4 flex-wrap print-hide">
+                                    <button
+                                        onClick={() => window.print()}
+                                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-electric-purple to-neon-cyan rounded-lg font-semibold text-white hover:shadow-lg hover:shadow-neon-cyan/50 transition-all duration-300"
+                                    >
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                        </svg>
+                                        Print / Save as PDF
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </GlassCard>

@@ -109,3 +109,90 @@ html {
   opacity: 1;
   transform: translateY(0) scale(1) rotateX(0deg);
 }
+
+/* Print Styles for Resume */
+@media print {
+
+  html,
+  body,
+  main {
+    background: white !important;
+    color: black !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    position: static !important;
+  }
+
+  /* Hide non-resume sections */
+  section:not(#resume),
+  footer,
+  nav,
+  header {
+    display: none !important;
+  }
+
+  /* Force readable colors and disable complex backgrounds */
+  #resume,
+  #resume * {
+    color: black !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    text-shadow: none !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    transform: none !important;
+    perspective: none !important;
+  }
+
+  /* Use simple borders for cards instead of backgrounds */
+  #resume .rounded-2xl {
+    border: 1px solid #ccc !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 2rem !important;
+    position: static !important;
+  }
+
+  /* Hide elements exclusively for print */
+  .print-hide {
+    display: none !important;
+  }
+
+  /* Reset layout constraints */
+  #resume {
+    padding: 0 !important;
+    margin: 0 !important;
+    position: static !important;
+  }
+
+  /* Make sure columns layout nicely without flex wrap */
+  .grid {
+    display: block !important;
+  }
+
+  .grid>div {
+    margin-bottom: 2rem !important;
+  }
+
+  /* Force all ScrollReveal elements to be visible */
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    position: static !important;
+  }
+
+  /* Prevent awkward page breaks for text */
+  p,
+  h2,
+  h3,
+  h4,
+  li,
+  ul {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}

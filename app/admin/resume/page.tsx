@@ -49,6 +49,7 @@ export default function AdminResumePage() {
                     location: 'City, Country',
                     summary: 'Your professional summary here...',
                     profileImageUrl: '',
+                    resumePdfUrl: '',
                 },
                 experience: [
                     {
@@ -397,6 +398,22 @@ export default function AdminResumePage() {
                                     />
                                 </div>
                             )}
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-white/80 mb-2">Resume PDF URL</label>
+                            <input
+                                type="url"
+                                value={resume.personalInfo.resumePdfUrl || ''}
+                                onChange={(e) =>
+                                    setResume({
+                                        ...resume,
+                                        personalInfo: { ...resume.personalInfo, resumePdfUrl: e.target.value },
+                                    })
+                                }
+                                placeholder="https://example.com/resume.pdf"
+                                className="w-full px-4 py-3 bg-void-800/50 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-cyan focus:ring-2 focus:ring-neon-cyan/20"
+                            />
                         </div>
                     </div>
 
