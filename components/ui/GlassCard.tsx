@@ -17,9 +17,9 @@ export default function GlassCard({ children, className = '', hover = false }: G
     const x = useMotionValue(0);
     const y = useMotionValue(0);
 
-    // Smooth spring physics for rotation
-    const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [10, -10]), { damping: 20, stiffness: 200 });
-    const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-10, 10]), { damping: 20, stiffness: 200 });
+    // Smooth spring physics for rotation - tuned for slower, more subtle movement
+    const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [5, -5]), { damping: 30, stiffness: 100 });
+    const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-5, 5]), { damping: 30, stiffness: 100 });
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (!cardRef.current) return;
